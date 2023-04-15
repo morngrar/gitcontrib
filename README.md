@@ -5,7 +5,24 @@
 
 ## Usage
 
-**TODO**
+Navigate to a git repo in your terminal and run:
+
+```
+gitcontrib summary
+```
+
+or
+
+```
+gitcontrib s
+```
+
+See full documentation with:
+
+```
+gitcontrib help
+```
+
 
 ## Install
 
@@ -15,7 +32,7 @@ Bonzai command tree.
 Standalone
 
 ```
-go install github.com/PLACEHOLDER/gitcontrib/cmd/gitcontrib@latest
+go install git.gvk.idi.ntnu.no/morngrar/gitcontrib/cmd/gitcontrib@latest
 ```
 
 Composed into a Bonzai™ command tree
@@ -25,12 +42,12 @@ package z
 
 import (
 	Z "github.com/rwxrob/bonzai/z"
-	gitcontrib "github.com/PLACEHOLDER/gitcontrib"
+	gitcontrib "git.gvk.idi.ntnu.no/morngrar/gitcontrib"
 )
 
 var Cmd = &Z.Cmd{
 	Name:     `z`,
-	Commands: []*Z.Cmd{help.Cmd, gitcontrib.Cmd, gitcontrib.BazCmd},
+	Commands: []*Z.Cmd{help.Cmd, gitcontrib.Cmd},
 }
 ```
 
@@ -71,4 +88,6 @@ access it.
 This repo used the [bonzai example](https://github.com/rwxrob/bonzai-example)
 template as a starting point. It is heavily modified, but some fragments may
 remain. Bonzai and that example is licensed under the Apache-2.0 license.
+
+This project is itself also licensed under Apache-2.0
 

@@ -1,4 +1,4 @@
-// Copyright 2022 gitcontrib Authors
+// Copyright 2023 gitcontrib Authors
 // SPDX-License-Identifier: Apache-2.0
 
 package gitcontrib
@@ -56,7 +56,7 @@ func mapAuthorCommits(shortlogOutput string) (map[string]int, error) {
 
 // GitAuthorCommits returns a map of author names with their respective
 // non-merge commit counts as values
-func GitAuthorCommits() map[string]int {
+func AuthorCommits() map[string]int {
 	var out string
 
 	out = Z.Out("git", "branch")

@@ -3,7 +3,7 @@
 
 package main
 
-import gitcontrib "github.com/PLACEHOLDER/gitcontrib"
+import gitcontrib "git.gvk.idi.ntnu.no/morngrar/gitcontrib"
 
 // tree grown from branch
 func main() { gitcontrib.Cmd.Run() }
