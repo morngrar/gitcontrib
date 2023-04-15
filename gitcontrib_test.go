@@ -18,3 +18,23 @@ func Test_ExtractCheckedOutBranch(t *testing.T) {
 		t.Errorf("Expected 'main' branch, got %q", branch)
 	}
 }
+
+func Test_MapAuthorCommits(t *testing.T) {
+	gitOutput := `    42  Author One
+     3  Author Two
+`
+	m, err := mapAuthorCommits(gitOutput)
+	if err != nil {
+		t.Fatalf("error mapping author commits: %s", err)
+	}
+
+	t.Logf("map: %v", m)
+
+	if got := m["Author One"]; got != 42 {
+		t.Errorf("Expected 42 commits for author one, got: %d", got)
+	}
+	if got := m["Author Two"]; got != 3 {
+		t.Errorf("Expected 3 commits for author two, got: %d", got)
+	}
+
+}

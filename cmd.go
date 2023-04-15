@@ -6,6 +6,8 @@ package gitcontrib
 
 import (
 	"fmt"
+	"os"
+	"text/tabwriter"
 	"text/template"
 
 	Z "github.com/rwxrob/bonzai/z"
@@ -161,7 +163,19 @@ var GitAuthorCommitsCmd = &Z.Cmd{
 	Summary: `lists the number of commits per author in current dir`,
 	Aliases: []string{"ac"},
 	Call: func(_ *Z.Cmd, _ ...string) error { // note conventional _
-		fmt.Println(GitAuthorCommits())
+
+		w := new(tabwriter.Writer)
+
+		// minwidth, tabwidth, padding, padchar, flags
+		w.Init(os.Stdout, 8, 8, 0, '\t', 0)
+		defer w.Flush()
+
+		fmt.Fprintf(w, " %s\t%s\n", "Author", "Commits")
+		fmt.Fprintf(w, " %s\t%s\n", "------", "-------")
+		for k, v := range GitAuthorCommits() {
+			fmt.Fprintf(w, " %s\t%d\n", k, v)
+		}
+
 		return nil
 	},
 	Commands: []*Z.Cmd{help.Cmd},

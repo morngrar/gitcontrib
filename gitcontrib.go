@@ -6,7 +6,9 @@ package gitcontrib
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"regexp"
+	"strconv"
 	"strings"
 
 	Z "github.com/rwxrob/bonzai/z"
@@ -33,18 +35,45 @@ func extractCheckedOutBranch(gitBranchOutput string) (string, error) {
 	return branch, nil
 }
 
-func GitAuthorCommits() string {
+func mapAuthorCommits(shortlogOutput string) (map[string]int, error) {
+
+	authorMap := make(map[string]int)
+	scanner := bufio.NewScanner(strings.NewReader(shortlogOutput))
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		fields := strings.Fields(line)
+		commits, err := strconv.Atoi(fields[0])
+		if err != nil {
+			return nil, fmt.Errorf("error parsing commit number: %w", err)
+		}
+
+		authorMap[strings.Join(fields[1:], " ")] = commits
+
+	}
+
+	return authorMap, nil
+}
+
+// GitAuthorCommits returns a map of author names with their respective
+// non-merge commit counts as values
+func GitAuthorCommits() map[string]int {
 	var out string
 
 	out = Z.Out("git", "branch")
-	fmt.Println(out)
-	// TODO: determine currently checked-out branch by the preceeding *, and
-	//		 use for the below command
+	branch, err := extractCheckedOutBranch(out)
+	if err != nil {
+		log.Fatalf("Error extracting branch: %s", err)
+	}
 
 	// git branch has to be passed when invoking like this
 	// https://stackoverflow.com/questions/51966053/what-is-wrong-with-invoking-git-shortlog-from-go-exec
-	out = Z.Out("git", "shortlog", "-sn", "--no-merges", "main")
-	return out
+	out = Z.Out("git", "shortlog", "-sn", "--no-merges", branch)
+	authorMap, err := mapAuthorCommits(out)
+	if err != nil {
+		log.Fatalf("Error extracting commit counts: %s", err)
+	}
+
+	return authorMap
 }
 
 func MapAddedAndRemoved() {
