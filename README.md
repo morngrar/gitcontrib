@@ -60,7 +60,7 @@ toolkit creator can mix and match branches in their own command trees. It also
 comes with a simple way to autocomplete under bash and having embedded dynamic
 documentation.
 
-See [the library repo][https://github.com/rwxrob/bonzai] for more details, and
+See [the library repo](https://github.com/rwxrob/bonzai) for more details, and
 [the original command tree](https://github.com/rwxrob/z) that seeded the
 creation of the framework for a concrete example other than gitcontrib.
 
