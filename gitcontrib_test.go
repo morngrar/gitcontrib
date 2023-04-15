@@ -1,6 +1,7 @@
 package gitcontrib
 
 import (
+	"io/ioutil"
 	"testing"
 )
 
@@ -37,4 +38,35 @@ func Test_MapAuthorCommits(t *testing.T) {
 		t.Errorf("Expected 3 commits for author two, got: %d", got)
 	}
 
+}
+
+func Test_MapLineChanges(t *testing.T) {
+	knownSums := map[string]int{
+		"Christopher Frantz":  3897,
+		"Mariusz Nowostawski": 33,
+		"siamak":              8,
+		"Svein-Kåre Bjørnsen": 7,
+		"Jon Gunnar Fossum":   2,
+	}
+
+	// read in test data file as string
+	buf, err := ioutil.ReadFile("testdata/numstat-example")
+	if err != nil {
+		t.Fatalf("unable to read file: %s", err)
+	}
+	output := string(buf)
+
+	authorMap, err := parseLineChanges(output)
+	if err != nil {
+		t.Fatalf("unable to parse output: %s", err)
+	}
+
+	for k, v := range authorMap {
+		if knownSums[k] != v.Additions+v.Deletions {
+			t.Errorf(
+				"Author %q changes mismatch. Exp: %d, a: %d, d: %d",
+				k, knownSums[k], v.Additions, v.Deletions,
+			)
+		}
+	}
 }

@@ -76,31 +76,86 @@ func GitAuthorCommits() map[string]int {
 	return authorMap
 }
 
-func MapAddedAndRemoved() {
-
-	// TODO: perform something like this:
-
-	//	#!/bin/sh
-	//	declare -A map
-	//	while read line; do
-	//		if grep "^[a-zA-Z]" <<< "$line" > /dev/null; then
-	//			current="$line"
-	//			if [ -z "${map[$current]}" ]; then
-	//				map[$current]=0
-	//			fi
-	//		elif grep "^[0-9]" <<<"$line" >/dev/null; then
-	//			for i in $(cut -f 1,2 <<< "$line"); do
-	//				map[$current]=$((map[$current] + $i))
-	//			done
-	//		fi
-	//	done <<< "$(git log --numstat --pretty="%aN")"
-	//
-	//	for i in "${!map[@]}"; do
-	//		echo -e "$i:${map[$i]}"
-	//	done | sort -nr -t ":" -k 2 | column -t -s ":"
-
+type LineChanges struct {
+	Additions int
+	Deletions int
 }
 
-func ContributionStatus() {
-	// TODO: combine the two functions above into a comprehensive report
+func (lc *LineChanges) Add(n int) {
+	lc.Additions += n
+}
+
+func (lc *LineChanges) Del(n int) {
+	lc.Deletions += n
+}
+
+func (lc *LineChanges) Sum() int {
+	return lc.Additions + lc.Deletions
+}
+
+func parseLineChanges(gitOutput string) (map[string]LineChanges, error) {
+	authorMap := make(map[string]LineChanges)
+
+	scanner := bufio.NewScanner(strings.NewReader(gitOutput))
+	currentAuthor := ""
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
+		}
+
+		// check if line is author
+		match, err := regexp.MatchString("^[a-zA-Z']", line)
+		if match {
+			if strings.HasPrefix(line, "'") && strings.HasSuffix(line, "'") {
+				line = line[:len(line)-1]
+				line = line[1:]
+			}
+			currentAuthor = line
+			_, ok := authorMap[line]
+			if !ok { // new author
+				authorMap[currentAuthor] = LineChanges{0, 0}
+			}
+			continue
+		}
+
+		// if not new author, accumulate counts
+		var adds int
+		var dels int
+
+		fields := strings.Fields(line)
+		if fields[0] != "-" {
+			adds, err = strconv.Atoi(fields[0])
+			if err != nil {
+				return nil, fmt.Errorf("error parsing adds: %s", err)
+			}
+		}
+
+		if fields[1] != "-" {
+			dels, err = strconv.Atoi(fields[1])
+			if err != nil {
+				return nil, fmt.Errorf("error parsing dels: %s", err)
+			}
+		}
+
+		a := authorMap[currentAuthor]
+		a.Add(adds)
+		a.Del(dels)
+		authorMap[currentAuthor] = a
+	}
+
+	return authorMap, nil
+}
+
+// MapLineChanges returns an author map containing the line changes of each
+// author in the current repo branch.
+func MapLineChanges() map[string]LineChanges {
+
+	out := Z.Out("git", "log", "--numstat", "--pretty='%aN'")
+	authorMap, err := parseLineChanges(out)
+	if err != nil {
+		log.Fatalf("Error extracting commit counts: %s", err)
+	}
+
+	return authorMap
 }

@@ -1,0 +1,194 @@
+Christopher Frantz
+
+31	0	13-Firestore-demo/README.md
+193	0	13-Firestore-demo/cmd/main.go
+11	0	13-Firestore-demo/go.mod
+4	0	14-Firestore-demo-client/README.md
+134	0	14-Firestore-demo-client/cmd/main.go
+3	0	14-Firestore-demo-client/go.mod
+Christopher Frantz
+
+1	0	12-webhooks-demo/README.md
+Christopher Frantz
+
+11	11	12-webhooks-demo/cmd/hashDemo/hashDemo.go
+Christopher Frantz
+
+2	1	12-webhooks-demo/README.md
+61	23	12-webhooks-demo/cmd/{ => client}/client.go
+0	0	12-webhooks-demo/cmd/{ => hashDemo}/hashDemo.go
+0	0	12-webhooks-demo/cmd/{ => server}/server.go
+5	6	12-webhooks-demo/handlers/handlers.go
+Christopher Frantz
+
+1	1	12-webhooks-demo/cmd/client.go
+20	7	12-webhooks-demo/cmd/hashDemo.go
+6	1	12-webhooks-demo/handlers/handlers.go
+Christopher Frantz
+
+1	1	12-webhooks-demo/cmd/client.go
+Christopher Frantz
+
+1	1	12-webhooks-demo/cmd/server.go
+Christopher Frantz
+
+63	0	12-webhooks-demo/README.md
+184	0	12-webhooks-demo/cmd/client.go
+33	0	12-webhooks-demo/cmd/hashDemo.go
+35	0	12-webhooks-demo/cmd/server.go
+3	0	12-webhooks-demo/go.mod
+115	0	12-webhooks-demo/handlers/handlers.go
+11	0	12-webhooks-demo/webhooks/constants.go
+6	0	12-webhooks-demo/webhooks/structs.go
+Christopher Frantz
+
+51	0	11-Gomock-Example/README.md
+13	0	11-Gomock-Example/basicExample/DbServiceInterface.go
+104	0	11-Gomock-Example/basicExample/DbServiceMock.go
+41	0	11-Gomock-Example/basicExample/basicExample_test.go
+5	0	11-Gomock-Example/go.mod
+29	0	11-Gomock-Example/go.sum
+64	0	11-Gomock-Example/httpExample/httpExample_test.go
+17	0	11-Gomock-Example/httpExample/httpServerInterface.go
+58	0	11-Gomock-Example/httpExample/httpServerMock.go
+12	0	11-Gomock-Example/httpExample/util.go
+Christopher Frantz
+
+12	0	10-GraphQL-Example/README.md
+3	0	10-GraphQL-Example/go.mod
+49	0	10-GraphQL-Example/main.go
+Christopher Frantz
+
+21	0	09-REST-studentServiceTest/README.md
+215	0	09-REST-studentServiceTest/api_student.go
+52	0	09-REST-studentServiceTest/cmd/students_server.go
+10	0	09-REST-studentServiceTest/constants.go
+5	0	09-REST-studentServiceTest/go.mod
+100	0	09-REST-studentServiceTest/students.go
+124	0	09-REST-studentServiceTest/students_server_test.go
+133	0	09-REST-studentServiceTest/students_test.go
+Jon Gunnar Fossum
+
+1	1	07-Render-example/.github/workflows/deployment.yaml
+siamak
+
+6	2	07-Render-example/.github/workflows/deployment.yaml
+Christopher Frantz
+
+-	-	08-Git-Actions-Setup/PaaS - Render - Assignment 1.xmind
+-	-	08-Git-Actions-Setup/PaaS - Render Setup for Assignment 1.pdf
+Christopher Frantz
+
+3	3	07-Render-example/.github/workflows/deployment.yaml
+Christopher Frantz
+Christopher Frantz
+
+38	0	07-Render-example/.github/workflows/deployment.yaml
+Christopher Frantz
+
+3	3	07-Render-example/ReadMe.md
+Christopher Frantz
+
+35	0	07-Render-example/ReadMe.md
+3	0	07-Render-example/go.mod
+7	0	07-Render-example/main.go
+77	0	07-Render-example/restful_server/restful_server.go
+10	0	07-Render-example/utils/constants.go
+179	0	07-Render-example/utils/utils.go
+Christopher Frantz
+
+2	2	04-REST-studentService/cmd/students_server.go
+3	0	04-REST-studentService/constants.go
+Christopher Frantz
+
+1	1	04-REST-studentService/cmd/students_server.go
+0	0	04-REST-studentService/{students.go => db_students.go}
+18	0	06-REST-stub/README.md
+32	0	06-REST-stub/cmd/RESTstub/main.go
+3	0	06-REST-stub/go.mod
+54	0	06-REST-stub/internal/StubHandler.go
+227	0	06-REST-stub/res/countries.json
+1	0	06-REST-stub/res/occurrences.json
+Christopher Frantz
+Christopher Frantz
+
+1	1	01-REST-diag/main.go
+'Svein-Kåre Bjørnsen'
+
+1	3	01-REST-diag/go.mod
+1	1	01-REST-diag/main.go
+0	1	02-JSON-demo/README.md
+Christopher Frantz
+Christopher Frantz
+
+7	3	02-JSON-demo/handler/collectionHandler.go
+2	0	02-JSON-demo/handler/locationHandler.go
+Christopher Frantz
+
+1	1	05-REST-client/README.md
+Christopher Frantz
+
+3	2	02-JSON-demo/README.md
+2	1	02-JSON-demo/handler/collectionHandler.go
+1	1	02-JSON-demo/handler/constants.go
+1	1	02-JSON-demo/handler/defaultHandler.go
+7	2	02-JSON-demo/handler/locationHandler.go
+3	3	02-JSON-demo/handler/structs.go
+Christopher Frantz
+Christopher Frantz
+
+4	1	04-REST-studentService/README.md
+60	45	04-REST-studentService/api_student.go
+7	5	04-REST-studentService/cmd/students_server.go
+9	5	04-REST-studentService/students.go
+3	1	05-REST-client/README.md
+4	3	05-REST-client/cmd/main.go
+Christopher Frantz
+
+4	0	02-JSON-demo/README.md
+1	1	02-JSON-demo/handler/collectionHandler.go
+27	1	02-JSON-demo/handler/locationHandler.go
+Christopher Frantz
+
+1	1	README.md
+Christopher Frantz
+
+26	0	02-JSON-demo/README.md
+3	0	02-JSON-demo/go.mod
+91	0	02-JSON-demo/handler/collectionHandler.go
+6	0	02-JSON-demo/handler/constants.go
+29	0	02-JSON-demo/handler/defaultHandler.go
+88	0	02-JSON-demo/handler/locationHandler.go
+13	0	02-JSON-demo/handler/structs.go
+28	0	02-JSON-demo/main.go
+14	0	03-JSON-marshal/README.md
+3	0	03-JSON-marshal/go.mod
+64	0	03-JSON-marshal/main.go
+17	0	04-REST-studentService/README.md
+115	0	04-REST-studentService/api_student.go
+52	0	04-REST-studentService/cmd/students_server.go
+4	0	04-REST-studentService/constants.go
+3	0	04-REST-studentService/go.mod
+88	0	04-REST-studentService/students.go
+14	0	05-REST-client/README.md
+68	0	05-REST-client/cmd/main.go
+3	0	05-REST-client/go.mod
+Christopher Frantz
+
+2	2	01-REST-diag/main.go
+Christopher Frantz
+
+6	0	01-REST-diag/main.go
+Christopher Frantz
+
+15	0	01-REST-diag/README.md
+5	0	01-REST-diag/go.mod
+97	0	01-REST-diag/main.go
+Mariusz Nowostawski
+
+3	0	00-Go-Intro/helloworld/go.mod
+8	0	00-Go-Intro/helloworld/hello/hello.go
+22	0	00-Go-Intro/helloworld/main.go
+Christopher Frantz
+
+5	0	README.md

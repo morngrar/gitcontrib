@@ -50,7 +50,8 @@ var Cmd = &Z.Cmd{
 		help.Cmd, conf.Cmd, vars.Cmd,
 
 		// local commands (in this module)
-		gitStatusCmd, GitAuthorCommitsCmd,
+		gitStatusCmd, GitAuthorCommitsCmd, GitMapAuthorChangesCmd,
+		ContributionSummaryCmd,
 	},
 
 	// Add custom BonzaiMark template extensions (or overwrite existing ones).
@@ -175,6 +176,87 @@ var GitAuthorCommitsCmd = &Z.Cmd{
 		for k, v := range GitAuthorCommits() {
 			fmt.Fprintf(w, " %s\t%d\n", k, v)
 		}
+
+		return nil
+	},
+	Commands: []*Z.Cmd{help.Cmd},
+}
+
+var GitMapAuthorChangesCmd = &Z.Cmd{
+	Name:    `authorchanges`,
+	Summary: `lists the line changes per author in current branch`,
+	Aliases: []string{"ach"},
+	Call: func(_ *Z.Cmd, _ ...string) error { // note conventional _
+
+		w := new(tabwriter.Writer)
+
+		// minwidth, tabwidth, padding, padchar, flags
+		w.Init(os.Stdout, 8, 8, 0, '\t', 0)
+		defer w.Flush()
+
+		fmt.Fprintf(w, " %s\t%s\t%s\n", "Author", "Additions", "Deletions")
+		fmt.Fprintf(w, " %s\t%s\t%s\n", "------", "---------", "---------")
+		for k, v := range MapLineChanges() {
+			fmt.Fprintf(w, " %s\t%d\t%d\n", k, v.Additions, v.Deletions)
+		}
+
+		return nil
+	},
+	Commands: []*Z.Cmd{help.Cmd},
+}
+
+var ContributionSummaryCmd = &Z.Cmd{
+	Name:    `summary`,
+	Summary: `lists the line changes per author in current branch`,
+	Aliases: []string{"s"},
+	Call: func(_ *Z.Cmd, _ ...string) error { // note conventional _
+
+		commitMap := GitAuthorCommits()
+		lineChangesMap := MapLineChanges()
+		commitRatioMap := make(map[string]float64)
+		lineRatioMap := make(map[string]float64)
+		granularityMap := make(map[string]float64)
+
+		// calculate aggregate metrics
+		commitTotal := 0
+		for _, v := range commitMap {
+			commitTotal += v
+		}
+
+		lineTotal := 0
+		for _, v := range lineChangesMap {
+			lineTotal += v.Sum()
+		}
+
+		for k, v := range lineChangesMap {
+			linesum := v.Sum()
+			lineRatio := float64(linesum) / float64(lineTotal)
+			lineRatioMap[k] = lineRatio
+			commitRatio := float64(commitMap[k]) / float64(commitTotal)
+			commitRatioMap[k] = commitRatio
+			granularityMap[k] = 1.0 / (float64(linesum) / float64(commitMap[k]))
+		}
+
+		// output results
+		w := new(tabwriter.Writer)
+
+		// minwidth, tabwidth, padding, padchar, flags
+		w.Init(os.Stdout, 8, 8, 0, '\t', 0)
+
+		fmt.Fprintf(w, " %s\t%s\t%s\t%s\t%s\t%s\t%s\n", "Author", "Commits", "Additions", "Deletions", "Line ratio", "Commit ratio", "Granularity")
+		fmt.Fprintf(w, " %s\t%s\t%s\t%s\t%s\t%s\t%s\n", "------", "-------", "---------", "---------", "----------", "------------", "-----------")
+		for k, v := range MapLineChanges() {
+			fmt.Fprintf(w, " %s\t%v\t%v\t%v\t%.2f\t%.2f\t%.2f\n", k, commitMap[k], v.Additions, v.Deletions, lineRatioMap[k], commitRatioMap[k], granularityMap[k])
+		}
+		err := w.Flush()
+		if err != nil {
+			return fmt.Errorf("failed to flush output buffer: %w", err)
+		}
+
+		fmt.Printf(
+			"\n Overall repo commit granularity: %.2f\n",
+			1.0/(float64(lineTotal)/float64(commitTotal)),
+		)
 
 		return nil
 	},
