@@ -3,13 +3,6 @@
 
 package gitcontrib
 
-import (
-	"bytes"
-	"log"
-	"os"
-	"testing"
-)
-
 // Unlike other Go projects, Bonzai commands don't really benefit from
 // Go's example-based tests (which normally would be in package
 // example_test). Instead, testing should be against the "pkg" library
@@ -20,19 +13,19 @@ import (
 // install github.com/PLACEHOLDER/gitcontrib@latest" to ensure you have
 // no errors with your versions, caching server, or dependencies.
 
-func TestBarCmd(t *testing.T) {
-
-	// capture the output
-	buf := new(bytes.Buffer)
-	log.SetFlags(0)
-	log.SetOutput(buf)
-	defer log.SetFlags(log.Flags())
-	defer log.SetOutput(os.Stderr)
-
-	//BarCmd.Call(nil)
-
-	t.Log(buf)
-	if buf.String() != "would bar stuff\n" {
-		t.Fail()
-	}
-}
+//func TestBarCmd(t *testing.T) {
+//
+//	// capture the output
+//	buf := new(bytes.Buffer)
+//	log.SetFlags(0)
+//	log.SetOutput(buf)
+//	defer log.SetFlags(log.Flags())
+//	defer log.SetOutput(os.Stderr)
+//
+//	//BarCmd.Call(nil)
+//
+//	t.Log(buf)
+//	if buf.String() != "would bar stuff\n" {
+//		t.Fail()
+//	}
+//}

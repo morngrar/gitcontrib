@@ -4,17 +4,42 @@
 package gitcontrib
 
 import (
+	"bufio"
 	"fmt"
+	"regexp"
+	"strings"
 
 	Z "github.com/rwxrob/bonzai/z"
 )
+
+func extractCheckedOutBranch(gitBranchOutput string) (string, error) {
+
+	// for all lines in git branch output, find the active one
+	scanner := bufio.NewScanner(strings.NewReader(gitBranchOutput))
+	var branch string
+	for scanner.Scan() {
+		line := scanner.Text()
+		match, err := regexp.MatchString("^\\* *", line)
+		if err != nil {
+			return "", fmt.Errorf("error matching line: %w", err)
+		}
+
+		if match {
+			branch = strings.Fields(line)[1]
+			break
+		}
+	}
+
+	return branch, nil
+}
 
 func GitAuthorCommits() string {
 	var out string
 
 	out = Z.Out("git", "branch")
 	fmt.Println(out)
-	// TODO: determine main branch (master/main) and use it for the below command
+	// TODO: determine currently checked-out branch by the preceeding *, and
+	//		 use for the below command
 
 	// git branch has to be passed when invoking like this
 	// https://stackoverflow.com/questions/51966053/what-is-wrong-with-invoking-git-shortlog-from-go-exec
