@@ -5,8 +5,11 @@
 package gitcontrib
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 	"text/tabwriter"
 	"text/template"
 
@@ -37,6 +40,7 @@ var Cmd = &Z.Cmd{
 
 		// local commands (in this module)
 		AuthorCommitsCmd, AuthorChangesCmd, ContributionSummaryCmd,
+		CsvCmd,
 	},
 
 	// Add custom BonzaiMark template extensions (or overwrite existing ones).
@@ -162,4 +166,97 @@ var ContributionSummaryCmd = &Z.Cmd{
 		return nil
 	},
 	Commands: []*Z.Cmd{help.Cmd},
+}
+
+var CsvCmd = &Z.Cmd{
+	Name:    `csv`,
+	Summary: `outputs CSV rows for the various report`,
+	Aliases: []string{"c"},
+	Commands: []*Z.Cmd{
+
+		// standard external branch imports (see rwxrob/{help,conf,vars})
+		help.Cmd,
+
+		// local commands (in this module)
+		CsvContributionSummaryCmd,
+	},
+	Description: `
+		The {{aka}} subcommand supplies the same commands as the root command, 
+		however, these output CSV rows instead of the human-readable tabulated
+		output of the original commands. The first field of each row is the
+		name of the repo directory itself, the rest follow the same order as 
+		the original command. Strings are wrapped in double quotes.
+		`,
+}
+
+var CsvContributionSummaryCmd = &Z.Cmd{
+	Name:    `summary`,
+	Summary: `outputs CSV rows for the 'summary' report`,
+	Aliases: []string{"s"},
+	Description: `
+		The {{aka}} subcommand gives the same output data as the  root 
+		subcommand of the same name, 
+		however, this one outputs CSV rows instead of the human-readable tabulated
+		output of the original command. The first field of each row is the
+		name of the repo directory itself, the rest follow the same order as 
+		the original command. Strings are wrapped in double quotes, and the CSV 
+		header is not printed to accomodate scripting.
+
+		The fields of this command is the following, in the given order:
+
+		Repo directory, Author, Commits, Additions, Deletions, Line ratio, Commit ratio, Granularity
+		`,
+
+	Call: func(_ *Z.Cmd, _ ...string) error { // note conventional _
+
+		commitMap := AuthorCommits()
+		lineChangesMap := MapLineChanges()
+		commitRatioMap := make(map[string]float64)
+		lineRatioMap := make(map[string]float64)
+		granularityMap := make(map[string]float64)
+
+		// calculate aggregate metrics
+		commitTotal := 0
+		for _, v := range commitMap {
+			commitTotal += v
+		}
+
+		lineTotal := 0
+		for _, v := range lineChangesMap {
+			lineTotal += v.Sum()
+		}
+
+		for k, v := range lineChangesMap {
+			linesum := v.Sum()
+			lineRatio := float64(linesum) / float64(lineTotal)
+			lineRatioMap[k] = lineRatio
+			commitRatio := float64(commitMap[k]) / float64(commitTotal)
+			commitRatioMap[k] = commitRatio
+			granularityMap[k] = 1.0 / (float64(linesum) / float64(commitMap[k]))
+		}
+
+		reponame, err := getRepoDirName()
+		if err != nil {
+			return fmt.Errorf("error getting repo name: %w", err)
+		}
+
+		for k, v := range MapLineChanges() {
+			fmt.Printf("\"%s\",\"%s\",%v,%v,%v,%.3f,%.3f,%.3f\n", reponame, k, commitMap[k], v.Additions, v.Deletions, lineRatioMap[k], commitRatioMap[k], granularityMap[k])
+		}
+
+		return nil
+	},
+	Commands: []*Z.Cmd{help.Cmd},
+}
+
+func getRepoDirName() (string, error) {
+
+	output := Z.Out("git", "rev-parse", "--show-toplevel")
+	if output == "" {
+		return "", errors.New("error getting git repo directory path")
+	}
+
+	dirname := strings.TrimSpace(filepath.Base(output))
+
+	return dirname, nil
 }
