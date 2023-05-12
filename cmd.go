@@ -165,6 +165,8 @@ var ContributionSummaryCmd = &Z.Cmd{
 	Commands: []*Z.Cmd{help.Cmd},
 }
 
+// CsvCmd provides a subtree command containing CSV-outputing equvalents of the
+// basic `gitcontrib` reports.
 var CsvCmd = &Z.Cmd{
 	Name:    `csv`,
 	Summary: `outputs CSV rows for the various report`,
@@ -188,6 +190,7 @@ var CsvCmd = &Z.Cmd{
 		`,
 }
 
+// CsvAuthorCommitsCmd provides a CSV-outputing equivalent of AuthorCommitsCmd
 var CsvAuthorCommitsCmd = &Z.Cmd{
 	Name:    `authorcommits`,
 	Summary: `outputs CSV rows with the number of commits per author in current dir`,
@@ -221,6 +224,7 @@ var CsvAuthorCommitsCmd = &Z.Cmd{
 	Commands: []*Z.Cmd{help.Cmd},
 }
 
+// CsvAuthorChangesCmd provides a CSV-outputing equivalent of AuthorChangesCmd
 var CsvAuthorChangesCmd = &Z.Cmd{
 	Name:    `authorchanges`,
 	Summary: `outputs CSV rows of the line changes per author in current branch`,
@@ -246,7 +250,10 @@ var CsvAuthorChangesCmd = &Z.Cmd{
 		}
 
 		for k, v := range MapLineChanges() {
-			fmt.Printf("\"%s\",\"%s\",%d,%d\n", reponame, k, v.Additions, v.Deletions)
+			fmt.Printf(
+				"\"%s\",\"%s\",%d,%d\n",
+				reponame, k, v.Additions, v.Deletions,
+			)
 		}
 
 		return nil
@@ -254,22 +261,26 @@ var CsvAuthorChangesCmd = &Z.Cmd{
 	Commands: []*Z.Cmd{help.Cmd},
 }
 
+// CsvContributionSummaryCmd provides a CSV-outputing equivalent of
+// ContributionSummaryCmd
 var CsvContributionSummaryCmd = &Z.Cmd{
 	Name:    `summary`,
 	Summary: `outputs CSV rows for the 'summary' report`,
 	Aliases: []string{"s"},
 	Description: `
-		The {{aka}} subcommand gives the same output data as the  root 
-		subcommand of the same name, 
-		however, this one outputs CSV rows instead of the human-readable tabulated
-		output of the original command. The first field of each row is the
-		name of the repo directory itself, the rest follow the same order as 
-		the original command. Strings are wrapped in double quotes, and the CSV 
-		header is not printed to accomodate scripting.
+
+		The {{aka}} subcommand gives the same output data as the  root
+		subcommand of the same name, however, this one outputs CSV rows instead
+		of the human-readable tabulated output of the original command. The
+		first field of each row is the name of the repo directory itself, the
+		rest follow the same order as the original command. Strings are wrapped
+		in double quotes, and the CSV header is not printed to accomodate
+		scripting.
 
 		The fields of this command is the following, in the given order:
 
-		Repo directory, Author, Commits, Additions, Deletions, Line ratio, Commit ratio, Granularity
+		Repo directory, Author, Commits, Additions, Deletions, Line ratio,
+		Commit ratio, Granularity.
 		`,
 
 	Call: func(_ *Z.Cmd, _ ...string) error { // note conventional _
