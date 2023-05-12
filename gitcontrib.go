@@ -5,14 +5,38 @@ package gitcontrib
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 
 	Z "github.com/rwxrob/bonzai/z"
 )
+
+// AuthorCommits returns a map of author names with their respective
+// non-merge commit counts as values
+func AuthorCommits() map[string]int {
+	var out string
+
+	out = Z.Out("git", "branch")
+	branch, err := extractCheckedOutBranch(out)
+	if err != nil {
+		log.Fatalf("Error extracting branch: %s", err)
+	}
+
+	// git branch has to be passed when invoking like this
+	// https://stackoverflow.com/questions/51966053/what-is-wrong-with-invoking-git-shortlog-from-go-exec
+	out = Z.Out("git", "shortlog", "-sn", "--no-merges", branch)
+	authorMap, err := mapAuthorCommits(out)
+	if err != nil {
+		log.Fatalf("Error extracting commit counts: %s", err)
+	}
+
+	return authorMap
+}
 
 func extractCheckedOutBranch(gitBranchOutput string) (string, error) {
 
@@ -35,6 +59,35 @@ func extractCheckedOutBranch(gitBranchOutput string) (string, error) {
 	return branch, nil
 }
 
+func getRepoDirName() (string, error) {
+
+	output := Z.Out("git", "rev-parse", "--show-toplevel")
+	if output == "" {
+		return "", errors.New("error getting git repo directory path")
+	}
+
+	dirname := strings.TrimSpace(filepath.Base(output))
+
+	return dirname, nil
+}
+
+type LineChanges struct {
+	Additions int
+	Deletions int
+}
+
+func (lc *LineChanges) Add(n int) {
+	lc.Additions += n
+}
+
+func (lc *LineChanges) Del(n int) {
+	lc.Deletions += n
+}
+
+func (lc *LineChanges) Sum() int {
+	return lc.Additions + lc.Deletions
+}
+
 func mapAuthorCommits(shortlogOutput string) (map[string]int, error) {
 
 	authorMap := make(map[string]int)
@@ -54,43 +107,17 @@ func mapAuthorCommits(shortlogOutput string) (map[string]int, error) {
 	return authorMap, nil
 }
 
-// GitAuthorCommits returns a map of author names with their respective
-// non-merge commit counts as values
-func AuthorCommits() map[string]int {
-	var out string
+// MapLineChanges returns an author map containing the line changes of each
+// author in the current repo branch.
+func MapLineChanges() map[string]LineChanges {
 
-	out = Z.Out("git", "branch")
-	branch, err := extractCheckedOutBranch(out)
-	if err != nil {
-		log.Fatalf("Error extracting branch: %s", err)
-	}
-
-	// git branch has to be passed when invoking like this
-	// https://stackoverflow.com/questions/51966053/what-is-wrong-with-invoking-git-shortlog-from-go-exec
-	out = Z.Out("git", "shortlog", "-sn", "--no-merges", branch)
-	authorMap, err := mapAuthorCommits(out)
+	out := Z.Out("git", "log", "--numstat", "--pretty='%aN'")
+	authorMap, err := parseLineChanges(out)
 	if err != nil {
 		log.Fatalf("Error extracting commit counts: %s", err)
 	}
 
 	return authorMap
-}
-
-type LineChanges struct {
-	Additions int
-	Deletions int
-}
-
-func (lc *LineChanges) Add(n int) {
-	lc.Additions += n
-}
-
-func (lc *LineChanges) Del(n int) {
-	lc.Deletions += n
-}
-
-func (lc *LineChanges) Sum() int {
-	return lc.Additions + lc.Deletions
 }
 
 func parseLineChanges(gitOutput string) (map[string]LineChanges, error) {
@@ -145,17 +172,4 @@ func parseLineChanges(gitOutput string) (map[string]LineChanges, error) {
 	}
 
 	return authorMap, nil
-}
-
-// MapLineChanges returns an author map containing the line changes of each
-// author in the current repo branch.
-func MapLineChanges() map[string]LineChanges {
-
-	out := Z.Out("git", "log", "--numstat", "--pretty='%aN'")
-	authorMap, err := parseLineChanges(out)
-	if err != nil {
-		log.Fatalf("Error extracting commit counts: %s", err)
-	}
-
-	return authorMap
 }

@@ -5,11 +5,8 @@
 package gitcontrib
 
 import (
-	"errors"
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 	"text/tabwriter"
 	"text/template"
 
@@ -247,16 +244,4 @@ var CsvContributionSummaryCmd = &Z.Cmd{
 		return nil
 	},
 	Commands: []*Z.Cmd{help.Cmd},
-}
-
-func getRepoDirName() (string, error) {
-
-	output := Z.Out("git", "rev-parse", "--show-toplevel")
-	if output == "" {
-		return "", errors.New("error getting git repo directory path")
-	}
-
-	dirname := strings.TrimSpace(filepath.Base(output))
-
-	return dirname, nil
 }
