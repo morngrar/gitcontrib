@@ -36,7 +36,7 @@ var Cmd = &Z.Cmd{
 		help.Cmd,
 
 		// local commands (in this module)
-		AuthorCommitsCmd, AuthorChangesCmd, ContributionSummaryCmd,
+		AuthorChangesCmd, AuthorCommitsCmd, ContributionSummaryCmd,
 		CsvCmd,
 	},
 
@@ -175,7 +175,7 @@ var CsvCmd = &Z.Cmd{
 		help.Cmd,
 
 		// local commands (in this module)
-		CsvContributionSummaryCmd,
+		CsvAuthorChangesCmd, CsvAuthorCommitsCmd, CsvContributionSummaryCmd,
 	},
 	Description: `
 		The {{aka}} subcommand supplies the same commands as the root command, 
@@ -183,7 +183,75 @@ var CsvCmd = &Z.Cmd{
 		output of the original commands. The first field of each row is the
 		name of the repo directory itself, the rest follow the same order as 
 		the original command. Strings are wrapped in double quotes.
+
+		Do 'cmd COMMAND help' for further details.
 		`,
+}
+
+var CsvAuthorCommitsCmd = &Z.Cmd{
+	Name:    `authorcommits`,
+	Summary: `outputs CSV rows with the number of commits per author in current dir`,
+	Aliases: []string{"ac"},
+	Description: `
+		The {{aka}} subcommand gives the same output data as the  root
+		subcommand of the same name, however, this one outputs CSV rows instead
+		of the human-readable tabulated output of the original command. The
+		first field of each row is the name of the repo directory itself, the
+		rest follow the same order as the original command. Strings are wrapped
+		in double quotes, and the CSV header is not printed to accomodate
+		scripting.
+
+		The fields of this command is the following, in the given order:
+
+		Repo directory, Author, Commits
+		`,
+	Call: func(_ *Z.Cmd, _ ...string) error { // note conventional _
+
+		reponame, err := getRepoDirName()
+		if err != nil {
+			return fmt.Errorf("error getting repo name: %w", err)
+		}
+
+		for k, v := range AuthorCommits() {
+			fmt.Printf("\"%s\",\"%s\",%d\n", reponame, k, v)
+		}
+
+		return nil
+	},
+	Commands: []*Z.Cmd{help.Cmd},
+}
+
+var CsvAuthorChangesCmd = &Z.Cmd{
+	Name:    `authorchanges`,
+	Summary: `outputs CSV rows of the line changes per author in current branch`,
+	Aliases: []string{"ach"},
+	Description: `
+		The {{aka}} subcommand gives the same output data as the  root
+		subcommand of the same name, however, this one outputs CSV rows instead
+		of the human-readable tabulated output of the original command. The
+		first field of each row is the name of the repo directory itself, the
+		rest follow the same order as the original command. Strings are wrapped
+		in double quotes, and the CSV header is not printed to accomodate
+		scripting.
+
+		The fields of this command is the following, in the given order:
+
+		Repo directory, Author, Additions, Deletions
+		`,
+	Call: func(_ *Z.Cmd, _ ...string) error { // note conventional _
+
+		reponame, err := getRepoDirName()
+		if err != nil {
+			return fmt.Errorf("error getting repo name: %w", err)
+		}
+
+		for k, v := range MapLineChanges() {
+			fmt.Printf("\"%s\",\"%s\",%d,%d\n", reponame, k, v.Additions, v.Deletions)
+		}
+
+		return nil
+	},
+	Commands: []*Z.Cmd{help.Cmd},
 }
 
 var CsvContributionSummaryCmd = &Z.Cmd{
