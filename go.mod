@@ -1,4 +1,4 @@
-module git.gvk.idi.ntnu.no/morngrar/gitcontrib
+module github.com/morngrar/gitcontrib
 
 go 1.20
 

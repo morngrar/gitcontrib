@@ -20,11 +20,11 @@ var Cmd = &Z.Cmd{
 
 	Name:      `gitcontrib`,
 	Summary:   `a command tree branch for analysing git author contributions`,
-	Version:   `v0.2.0`,
+	Version:   `v0.2.1`,
 	Copyright: `Copyright 2023 Svein-Kåre Bjørnsen`,
 	License:   `Apache-2.0`,
-	Source:    `git@git.gvk.idi.ntnu.no:morngrar/gitcontrib.git`,
-	Issues:    `https://git.gvk.idi.ntnu.no/morngrar/gitcontrib/-/issues`,
+	Source:    `git@github.com:morngrar/gitcontrib.git`,
+	Issues:    `https://github.com/morngrar/gitcontrib/issues`,
 
 	// Composite commands, local and external, all have their own names
 	// that are added to the command tree depending on where they are

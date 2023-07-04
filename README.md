@@ -32,7 +32,7 @@ Bonzai command tree.
 Standalone
 
 ```
-go install git.gvk.idi.ntnu.no/morngrar/gitcontrib/cmd/gitcontrib@latest
+go install github.com/morngrar/gitcontrib/cmd/gitcontrib@latest
 ```
 
 Composed into a Bonzai™ command tree
@@ -42,7 +42,7 @@ package z
 
 import (
 	Z "github.com/rwxrob/bonzai/z"
-	gitcontrib "git.gvk.idi.ntnu.no/morngrar/gitcontrib"
+	gitcontrib "github.com/morngrar/gitcontrib"
 )
 
 var Cmd = &Z.Cmd{
