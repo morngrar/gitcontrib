@@ -1,7 +1,7 @@
 # gitcontrib: a Bonzai™ branch and standalone tool for git analysis
 
 
-[![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache2-brightgreen.svg)](LICENSE) [![Go Report Card](https://goreportcard.com/badge/github.com/morngrar/gitcontrib)](https://goreportcard.com/report/github.com/morngrar/gitcontrib)
 
 ## Usage
 
