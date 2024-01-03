@@ -20,7 +20,7 @@ var Cmd = &Z.Cmd{
 
 	Name:      `gitcontrib`,
 	Summary:   `a command tree branch for analysing git author contributions`,
-	Version:   `v0.2.1`,
+	Version:   `v0.2.2`,
 	Copyright: `Copyright 2023 Svein-Kåre Bjørnsen`,
 	License:   `Apache-2.0`,
 	Source:    `git@github.com:morngrar/gitcontrib.git`,
